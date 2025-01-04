@@ -14,9 +14,9 @@
 
       iframe {
         width: 100%;
-        height: 100%;
         border: none;
         display: block; /* Avoid extra whitespace */
+        height: 100%; /* Default height for most devices */
       }
     </style>
   </head>
@@ -25,22 +25,34 @@
       id="chatFrame"
       src="https://www.chatbase.co/chatbot-iframe/zwOpiGmzLwmODR8weekJ9">
     </iframe>
+
     <script>
       const iframe = document.getElementById('chatFrame');
 
-      function adjustIframeHeight() {
-        const viewportHeight = window.innerHeight;
-        iframe.style.height = viewportHeight + 'px';
+      function adjustIframeForKeyboard() {
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+        if (isIOS) {
+          window.addEventListener('focusin', () => {
+            // Keyboard is visible, reduce iframe height
+            const viewportHeight = window.innerHeight;
+            iframe.style.height = viewportHeight + 'px';
+          });
+
+          window.addEventListener('focusout', () => {
+            // Keyboard is hidden, reset iframe height
+            iframe.style.height = '100%';
+          });
+        } else {
+          // For non-iOS devices, adjust normally
+          window.addEventListener('resize', () => {
+            iframe.style.height = window.innerHeight + 'px';
+          });
+        }
       }
 
-      // Adjust on load
-      adjustIframeHeight();
-
-      // Adjust on resize (handles iOS keyboard)
-      window.addEventListener('resize', () => {
-        setTimeout(adjustIframeHeight, 300); // Delay for keyboard animation
-      });
+      // Call the function to handle adjustments
+      adjustIframeForKeyboard();
     </script>
   </body>
 </html>
-
