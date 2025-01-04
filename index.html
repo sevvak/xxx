@@ -2,78 +2,45 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
     <title>Dora AI</title>
     <style>
-      /* Ensure the page occupies the full viewport */
       html, body {
         margin: 0;
         padding: 0;
+        /* Let the parent page be scrollable */
         height: 100%;
-        overflow: hidden;
+        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+        overflow-y: auto; /* So iOS can scroll page if needed */
+        background: #fff;
       }
 
-      /* Styling for the iframe */
+      /* A container that holds the iframe */
+      .iframe-container {
+        position: relative;
+        width: 100%;
+        /* Slightly less than 100% to ensure the page is scrollable */
+        height: calc(100% - 1px);
+        border: none;
+      }
+
       iframe {
-        position: absolute;
-        top: 0;
-        left: 0;
         width: 100%;
         height: 100%;
-        border: none;
-        will-change: height; /* Optimize for animation */
+        border: 0;
+        display: block;
       }
     </style>
   </head>
   <body>
-    <!-- Chat iframe -->
-    <iframe
-      id="chatFrame"
-      src="https://www.chatbase.co/chatbot-iframe/zwOpiGmzLwmODR8weekJ9">
-    </iframe>
-
-    <script>
-      const iframe = document.getElementById('chatFrame');
-
-      function adjustIframeHeight() {
-        if (window.visualViewport) {
-          // Use visualViewport API for precise updates
-          const updateHeight = () => {
-            const viewportHeight = window.visualViewport.height;
-            iframe.style.height = `${viewportHeight}px`;
-          };
-
-          // Adjust immediately and on resize
-          updateHeight();
-
-          // Listen for resize and input focus events
-          window.visualViewport.addEventListener('resize', updateHeight);
-          document.addEventListener('focusin', updateHeight);
-          document.addEventListener('focusout', updateHeight);
-        } else {
-          // Fallback for older devices
-          const updateFallbackHeight = () => {
-            iframe.style.height = `${window.innerHeight}px`;
-          };
-
-          updateFallbackHeight();
-          window.addEventListener('resize', updateFallbackHeight);
-        }
-      }
-
-      function forceImmediateAdjustment() {
-        if (window.visualViewport) {
-          // Force quick height adjustment when keyboard is shown/hidden
-          const viewportHeight = window.visualViewport.height;
-          iframe.style.height = `${viewportHeight}px`;
-        }
-      }
-
-      // Call the function to initialize adjustments
-      adjustIframeHeight();
-
-      // Add an interval to check for rapid updates
-      setInterval(forceImmediateAdjustment, 50); // Poll every 50ms for faster response
-    </script>
+    <div class="iframe-container">
+      <iframe
+        src="https://www.chatbase.co/chatbot-iframe/zwOpiGmzLwmODR8weekJ9"
+        allow="camera; microphone"
+      ></iframe>
+    </div>
   </body>
 </html>
