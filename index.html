@@ -1,34 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta charset="UTF-8" />
+    <meta 
+      name="viewport" 
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Dora AI</title>
     <style>
       html, body {
         margin: 0; 
         padding: 0; 
         height: 100%;
-        /* Let iOS handle scrolling */
-        -webkit-overflow-scrolling: touch;
-        overflow-y: auto;
+        overflow: hidden; /* We’ll control scrolling in the iframe or JS */
       }
-      #chat-container {
+      iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
+        border: none;
       }
     </style>
   </head>
   <body>
-    <div id="chat-container"></div>
-    <script src="https://www.chatbase.co/widget.js"></script>
+    <iframe
+      id="chatFrame"
+      src="https://www.chatbase.co/chatbot-iframe/zwOpiGmzLwmODR8weekJ9"
+    ></iframe>
+
     <script>
-      new Chatbase({
-        botId: "zwOpiGmzLwmODR8weekJ9",
-        container: "#chat-container",
-      });
+      (function() {
+        const iframe = document.getElementById('chatFrame');
+
+        function updateHeight() {
+          if (window.visualViewport) {
+            iframe.style.height = window.visualViewport.height + 'px';
+          } else {
+            iframe.style.height = window.innerHeight + 'px';
+          }
+        }
+
+        // Initial update
+        updateHeight();
+
+        // Listen for iOS keyboard changes
+        if (window.visualViewport) {
+          window.visualViewport.addEventListener('resize', updateHeight);
+        } else {
+          window.addEventListener('resize', updateHeight);
+        }
+
+        // Focus events to catch immediate input field focus
+        document.addEventListener('focusin', updateHeight);
+        document.addEventListener('focusout', updateHeight);
+      })();
     </script>
   </body>
 </html>
