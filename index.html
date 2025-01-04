@@ -21,6 +21,7 @@
         width: 100%;
         height: 100%;
         border: none;
+        transition: height 0.1s ease-in-out; /* Smooth height adjustments */
       }
     </style>
   </head>
@@ -32,25 +33,32 @@
     </iframe>
 
     <script>
-      // Reference to the iframe
       const iframe = document.getElementById('chatFrame');
 
-      // Adjust the iframe height dynamically
       function adjustIframeHeight() {
         if (window.visualViewport) {
-          // Use visualViewport API for modern iOS devices
-          const viewport = window.visualViewport;
-          iframe.style.height = `${viewport.height}px`;
+          // Function to update iframe height
+          const updateHeight = () => {
+            iframe.style.height = `${window.visualViewport.height}px`;
+          };
 
-          // Listen for resize events (triggered by keyboard appearance)
-          viewport.addEventListener('resize', () => {
-            iframe.style.height = `${viewport.height}px`;
-          });
+          // Initial adjustment
+          updateHeight();
+
+          // Listen for changes in viewport height
+          window.visualViewport.addEventListener('resize', updateHeight);
+
+          // Handle potential focus events for better responsiveness
+          document.addEventListener('focusin', updateHeight);
+          document.addEventListener('focusout', updateHeight);
         } else {
           // Fallback for older devices
-          window.addEventListener('resize', () => {
+          const updateFallbackHeight = () => {
             iframe.style.height = `${window.innerHeight}px`;
-          });
+          };
+
+          updateFallbackHeight();
+          window.addEventListener('resize', updateFallbackHeight);
         }
       }
 
