@@ -1,70 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-  />
-  <title>Dora AI</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      /* You can remove overflow: hidden if you want to allow body scrolling */
-    }
-    iframe {
-      width: 100%;
-      height: 100vh; /* Let CSS fill the viewport height */
-      border: none;
-      /* Optionally, you can try `loading="lazy"` for a deferred load:
-         <iframe src="..." loading="lazy"></iframe> */
-    }
-  </style>
-</head>
-<body>
-  <iframe
-    id="chatFrame"
-    src="https://www.chatbase.co/chatbot-iframe/zwOpiGmzLwmODR8weekJ9"
-  ></iframe>
-  
-  <!-- 
-    If you still need dynamic resizing (e.g., handling iOS keyboard),
-    you can add a throttled or debounced version of your resize logic here. 
-    For many use cases, relying solely on 100vh is enough.
-  -->
-  <!--
-  <script>
-    // Example of a minimal approach if you want to handle certain edge cases:
-    (function() {
-      const iframe = document.getElementById('chatFrame');
-      let resizeTimeout;
+  <head>
+    <meta charset="UTF-8" />
+    <meta 
+      name="viewport" 
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Dora AI</title>
+    <style>
+      html, body {
+        margin: 0; 
+        padding: 0; 
+        height: 100%;
+        overflow: hidden; /* We’ll control scrolling in the iframe or JS */
+      }
+      iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+    </style>
+  </head>
+  <body>
+    <iframe
+      id="chatFrame"
+      src="https://www.chatbase.co/chatbot-iframe/zwOpiGmzLwmODR8weekJ9"
+    ></iframe>
 
-      function updateHeight() {
-        if (window.visualViewport) {
-          iframe.style.height = window.visualViewport.height + 'px';
-        } else {
-          iframe.style.height = window.innerHeight + 'px';
+    <script>
+      (function() {
+        const iframe = document.getElementById('chatFrame');
+
+        function updateHeight() {
+          if (window.visualViewport) {
+            iframe.style.height = window.visualViewport.height + 'px';
+          } else {
+            iframe.style.height = window.innerHeight + 'px';
+          }
         }
-      }
 
-      // Debounce the resize event to avoid excessive recalculations:
-      function debouncedResize() {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(updateHeight, 100);
-      }
+        // Initial update
+        updateHeight();
 
-      // Initial update
-      updateHeight();
+        // Listen for iOS keyboard changes
+        if (window.visualViewport) {
+          window.visualViewport.addEventListener('resize', updateHeight);
+        } else {
+          window.addEventListener('resize', updateHeight);
+        }
 
-      if (window.visualViewport) {
-        window.visualViewport.addEventListener('resize', debouncedResize);
-      } else {
-        window.addEventListener('resize', debouncedResize);
-      }
-    })();
-  </script>
-  -->
-</body>
+        // Focus events to catch immediate input field focus
+        document.addEventListener('focusin', updateHeight);
+        document.addEventListener('focusout', updateHeight);
+      })();
+    </script>
+  </body>
 </html>
